@@ -1,0 +1,12 @@
+datapay:
+  target: prod
+  outputs:
+    prod:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('PROJECT_ID') }}"
+      dataset: "{{ env_var('BQ_DATASET') }}"
+      location: EU
+      threads: 1
+      timeout_seconds: 300
+      retries: 1

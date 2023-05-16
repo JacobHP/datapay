@@ -1,3 +1,4 @@
 select * EXCEPT(date, jobUrl, jobDescription, employerProfileId, employerProfileName),
   date AS createdDate
-FROM `inbound.reed_listings`
+FROM `datapay.stg_listings`
+WHERE DATE(_PARTITIONTIME) = CURRENT_DATE()

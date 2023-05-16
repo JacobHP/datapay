@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-extract-docker-image'
+    args: ['build', '-t', 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '--build-arg','CREDENTIALS=${_CREDENTIALS}', '-f', 'Dockerfile', '.']
+
+images:
+- 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
+timeout: 1800s
+
+# gcloud builds submit --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-extract",_IMAGE="extract",_CREDENTIALS="sa.json" .
