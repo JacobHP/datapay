@@ -3,17 +3,17 @@ name: Airflow CI
 on: [push]
 
 jobs:
-	build-test:
-		runs-on: ubuntu-latest
-		steps:
-			- name: checkout
-				uses: actions/checkout@v3
-			- name: cd to dir
-				run: cd airflow
-			- name: Create airflow env
-				run: make setup
-			- name: run tests
-				run: make testing
-			- name: Take down airflow env
-				run: make down
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+     - name: checkout
+       uses: actions/checkout@v3
+     - name: cd to dir
+       run: cd airflow
+     - name: Create airflow env
+       run: make setup
+     - name: run tests
+       run: make testing
+     - name: Take down airflow env
+       run: make down
 
