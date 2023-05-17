@@ -1,0 +1,21 @@
+name: Airflow CI
+
+on:
+	push:
+		branches: [ main ]
+	pull_request:
+		branches: [ main ]
+
+jobs:
+	build:
+		runs-on: ubuntu-latest
+		steps:
+		- uses: actions/checkout@v3
+		- run: cd airflow
+		- name: Create airflow env
+		  run: make setup
+		- name: run tests
+		  run: make testing
+		- name: Take down airflow env
+			run: make down
+
