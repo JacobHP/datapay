@@ -3,10 +3,10 @@ name: Airflow CI
 on: [push]
 
 jobs:
-	build:
+	build-test:
 		runs-on: ubuntu-latest
 		steps:
-			- name: Check out code
+			- name: checkout
 				uses: actions/checkout@v3
 			- name: cd to dir
 				run: cd airflow
