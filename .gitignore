@@ -3,7 +3,6 @@ __pycache__/
 .vscode/
 target/
 dbt_packages/
-logs/
 .env 
 sa.json
 airflow.cfg
@@ -12,3 +11,4 @@ airflow.db
 .terraform.lock.hcl
 *.tfstate*
 *.tfvars
+dbt/logs/
