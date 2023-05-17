@@ -1,7 +1,7 @@
 
 setup:
 	docker compose up -d
-	sleep(90)
+	sleep 90
 down:
 	docker compose down
 
