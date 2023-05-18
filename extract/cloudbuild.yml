@@ -2,7 +2,8 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-extract-docker-image'
     args: ['build', '-t', 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '-f', 'Dockerfile', '.']
-
+options:
+  logging: CLOUD_LOGGING_ONLY
 images:
 - 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
 timeout: 1800s
