@@ -3,8 +3,6 @@ steps:
     id: 'build-dbt-docker-image'
     args: ['build', '--build-arg', 'PROJECT_ID=${_PROJECT}', '--build-arg', 'BQ_DATASET=datapay', '--build-arg', 'DBT_DIR=.',  '-t', 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '-f', 'Dockerfile', '.']
 
-options:
-  logging: CLOUD_LOGGING_ONLY
 images:
 - 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
 timeout: 1800s

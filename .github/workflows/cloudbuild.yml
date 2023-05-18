@@ -39,11 +39,11 @@ jobs:
 
       - name: 'Build extract image'
         working-directory: ./extract
-        run: 'gcloud beta builds submit --quiet --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-extract",_IMAGE="extract" .'
+        run: 'gcloud builds submit --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-extract",_IMAGE="extract" .'
 
       - name: 'Build dbt image'
         working-directory: ./dbt
-        run: 'gcloud beta builds submit --quiet --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-dbt",_IMAGE="dbt" .'
+        run: 'gcloud builds submit --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-dbt",_IMAGE="dbt" .'
 
 
 
