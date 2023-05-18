@@ -18,3 +18,23 @@ variable "zone" {
   type        = string
   description = "The GCP zone to use"
 }
+
+variable "service_account" {
+  type        = string 
+  description = "Service Account email"
+}
+
+variable "pool_id" {
+  type        = string 
+  description = "gh oidc pool id"
+}
+
+variable "provider_id" {
+  type        = string 
+  description = "gh oidc provider id"
+}
+
+variable "repository" {
+  type        = string 
+  description = "gh repo - <USER>/<REPOSITORY>"
+}
