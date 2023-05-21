@@ -1,0 +1,85 @@
+main:
+    params: [args]
+    steps:
+    - init:
+        assign:
+            - projectId: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+            - locationId: 'europe-west1'
+            - datasetId: 'datapay'
+            - bucketId: 'datapay'
+            - currentDate: ${text.replace_all(text.substring(time.format(sys.now()), 0, 10),"-","")}
+            - listingsTableId: ${"stg_listings$"+currentDate}
+            - detailsTableId: ${"stg_details$"+currentDate}
+            - listingsUriId: ${"gs://datapay/reed/reed_listings_" + currentDate +".json"}
+            - detailsUriId: ${"gs://datapay/reed/reed_details_" + currentDate +".json"}
+            - extractImage: ${args.extractUrl}
+            - dbtImage: ${args.dbtUrl}
+
+            
+            
+    - extract:
+        call: googleapis.cloudbuild.v1.projects.builds.create
+        args:
+            projectId: ${projectId}
+            parent: ${"projects/" + projectId + "/locations/global"}
+            body:
+                serviceAccount: ${sys.get_env("GOOGLE_CLOUD_SERVICE_ACCOUNT_NAME")}
+                options:
+                    logging: CLOUD_LOGGING_ONLY
+                steps:
+                - name: gcr.io/cloud-builders/docker
+                  args:
+                    - "run"
+                    - ${extractImage}
+        result: result_builds_create
+
+    - insertListings:
+        call: googleapis.bigquery.v2.jobs.insert
+        args:
+            projectId: ${projectId}
+            body:
+                configuration:
+                    load:
+                        destinationTable:
+                            datasetId: ${datasetId}
+                            projectId: ${projectId}
+                            tableId: ${listingsTableId}
+                        sourceUris: ${listingsUriId}
+                        sourceFormat: "NEWLINE_DELIMITED_JSON"
+                        createDisposition: "CREATE_IF_NEEDED"
+                        writeDisposition: "WRITE_TRUNCATE"
+                        autodetect: true
+    - insertDetails:
+        call: googleapis.bigquery.v2.jobs.insert
+        args:
+            projectId: ${projectId}
+            body:
+                configuration:
+                    load:
+                        destinationTable:
+                            datasetId: ${datasetId}
+                            projectId: ${projectId}
+                            tableId: ${detailsTableId}
+                        sourceUris: ${detailsUriId}
+                        sourceFormat: "NEWLINE_DELIMITED_JSON"
+                        createDisposition: "CREATE_IF_NEEDED"
+                        writeDisposition: "WRITE_TRUNCATE"
+                        autodetect: true
+    - dbt:
+        call: googleapis.cloudbuild.v1.projects.builds.create
+        args:
+            projectId: ${projectId}
+            parent: ${"projects/" + projectId + "/locations/global"}
+            body:
+                serviceAccount: ${sys.get_env("GOOGLE_CLOUD_SERVICE_ACCOUNT_NAME")}
+                options:
+                    logging: CLOUD_LOGGING_ONLY
+                steps:
+                - name: gcr.io/cloud-builders/docker
+                  args:
+                    - "run"
+                    - ${dbtImage}
+        result: result_dbt
+
+    - returnOutput:
+            return: "SUCCESS"
