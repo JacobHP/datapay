@@ -47,4 +47,4 @@ jobs:
 
       - name: 'Deploy workflows'
         working-directory: ./workflows
-        run: 'gcloud workflows deploy reed_workflow --location="europe-west1" --source=reed_workflow.yml --description="Reed ELT orchestration" '
+        run: 'gcloud workflows deploy reed_workflow --location="europe-west1" --source=reed_workflow.yml --description="Reed ELT orchestration"'
