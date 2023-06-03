@@ -13,7 +13,7 @@ main:
             - listingsUriId: ${"gs://datapay/reed/reed_listings_" + currentDate +".json"}
             - detailsUriId: ${"gs://datapay/reed/reed_details_" + currentDate +".json"}
             - extractImage: ${args.extractImage}
-            - dbtImage: ${args.dbtImage
+            - dbtImage: ${args.dbtImage}
             
     - extract:
         call: googleapis.cloudbuild.v1.projects.builds.create
