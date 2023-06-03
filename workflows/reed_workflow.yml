@@ -4,7 +4,7 @@ main:
     - init:
         assign:
             - projectId: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
-            - locationId: 'europe-west1'
+            - locationId: ${args.locationId}
             - datasetId: 'datapay'
             - bucketId: 'datapay'
             - currentDate: ${text.replace_all(text.substring(time.format(sys.now()), 0, 10),"-","")}
@@ -12,10 +12,8 @@ main:
             - detailsTableId: ${"stg_details$"+currentDate}
             - listingsUriId: ${"gs://datapay/reed/reed_listings_" + currentDate +".json"}
             - detailsUriId: ${"gs://datapay/reed/reed_details_" + currentDate +".json"}
-            - extractImage: ${args.extractUrl}
-            - dbtImage: ${args.dbtUrl}
-
-            
+            - extractImage: ${args.extractImage}
+            - dbtImage: ${args.dbtImage
             
     - extract:
         call: googleapis.cloudbuild.v1.projects.builds.create
@@ -31,6 +29,7 @@ main:
                   args:
                     - "run"
                     - ${extractImage}
+                timeout: "5400s"
         result: result_builds_create
 
     - insertListings:
@@ -64,6 +63,8 @@ main:
                         sourceFormat: "NEWLINE_DELIMITED_JSON"
                         createDisposition: "CREATE_IF_NEEDED"
                         writeDisposition: "WRITE_TRUNCATE"
+                        TimePartitioning: 
+                          type: "DAY"
                         autodetect: true
     - dbt:
         call: googleapis.cloudbuild.v1.projects.builds.create
