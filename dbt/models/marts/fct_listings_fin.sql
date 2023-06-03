@@ -24,7 +24,7 @@ WITH technologies AS (
         'Kubernetes',
         'Docker',
         'Terraform',
-    'Bigquery',
+        'Bigquery',
         'Postgres',
         'MongoDB',
         'Redshift',
@@ -49,6 +49,19 @@ WITH technologies AS (
         ELSE maximumSalary END AS maximumSalary,
     CASE WHEN currency = 'EUR' THEN 0.88 * minimumSalary 
         ELSE minimumSalary END AS minimumSalary,
+
+    CASE WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'data engineer') THEN 'Data Engineer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'data scientist') THEN 'Data Scientist'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'cloud engineer| cloud developer') THEN 'Cloud Engineer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'data analyst') THEN 'Data Analyst'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'machine learning') THEN 'Machine Learning Engineer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'devops| dev ops') THEN 'DevOps Engineer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'software engineer|software developer|software development | developer') THEN 'Software Engineer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'frontend|front end') THEN 'Front End Enginer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'backend|back end') THEN 'Back End Engineer'
+      WHEN REGEXP_CONTAINS(LOWER(jobTitle), 'architect|architecture') THEN 'Architect'
+      ELSE 'Other Role' END AS role_type,
+
 
     regexp_replace(
     regexp_replace(

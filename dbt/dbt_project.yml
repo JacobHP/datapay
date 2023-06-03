@@ -18,8 +18,8 @@ clean-targets:
 models:
   datapay:
     staging:
-      +materialized: view
+      +materialized: table
     intermediate:
-      +materialized: ephemeral
+      +materialized: view
     marts:
       +materialized: table
