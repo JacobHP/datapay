@@ -10,7 +10,7 @@ Visualisation: https://lookerstudio.google.com/reporting/8fd12efe-4903-4c4d-ad12
 
 ### Architecture:
 
-*TODO*
+![architecutre](./img/architecture.png)
 
 #### Requirements
 
