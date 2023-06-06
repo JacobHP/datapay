@@ -75,26 +75,36 @@ WITH technologies AS (
     FROM `datapay.int_details`
 )
 
-, splitted as (
-    SELECT jobId, SPLIT(LOWER(jobDescription), ' ') AS description_split
-    FROM details
-)
+-- , splitted as (
+--     SELECT jobId, SPLIT(LOWER(jobDescription), ' ') AS description_split
+--     FROM details
+-- )
 
-, unnested AS (
-    SELECT jobId, REGEXP_REPLACE(description_term, r'[^a-zA-Z]', '') AS description_term
-    FROM splitted,
-    UNNEST(description_split) AS description_term
-)
+-- , unnested AS (
+--     SELECT jobId, REGEXP_REPLACE(description_term, r'[^a-zA-Z]', '') AS description_term
+--     FROM splitted,
+--     UNNEST(description_split) AS description_term
+-- )
 
 , skills AS (
     SELECT a.jobId,  ARRAY_AGG(DISTINCT b.skill) AS skill_requirements
-    FROM unnested a 
+    FROM details a 
     INNER JOIN technologies b
-    ON a.description_term LIKE CONCAT('%', LOWER(b.skill), '%')
+    ON LOWER(a.jobDescription) LIKE CONCAT('% ', LOWER(b.skill), ' %')
     GROUP BY a.jobId
 )
 
-SELECT a.*, b.skill_requirements
+, nonskills AS (
+    SELECT a.jobId, ARRAY_AGG(DISTINCT b.skill) AS non_skill_requirements
+    FROM details a 
+    INNER JOIN technologies b 
+    ON LOWER(a.jobDescription) NOT LIKE CONCAT('% ', LOWER(b.skill), ' %')
+    GROUP BY a.jobId
+)
+
+SELECT a.*, b.skill_requirements, c.non_skill_requirements
 FROM details a
 LEFT JOIN skills b
 ON a.jobId = b.jobId
+LEFT JOIN nonskills c 
+ON a.jobId = c.jobId
