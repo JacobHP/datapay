@@ -4,9 +4,9 @@ steps:
     args: ['-c', "gcloud secrets versions access latest --secret=service_account_key --out-file=./service_account.json"]
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-extract-docker-image'
-    args: ['build', '-t', 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '--build-arg', 'CREDENTIALS=./service_account.json', '-f', 'Dockerfile', '.']
+    args: ['build', '-t', '${_REGION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '--build-arg', 'CREDENTIALS=./service_account.json', '-f', 'Dockerfile', '.']
 images:
-- 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
+- '${_REGION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
 timeout: 1800s
 
 # gcloud builds submit --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-extract",_IMAGE="extract",_CREDENTIALS="sa.json" .

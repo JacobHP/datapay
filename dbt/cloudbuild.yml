@@ -4,10 +4,10 @@ steps:
     args: ['-c', "gcloud secrets versions access latest --secret=service_account_key --out-file=./service_account.json"]
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-dbt-docker-image'
-    args: ['build', '--build-arg', 'PROJECT_ID=${_PROJECT}', '--build-arg', 'BQ_DATASET=datapay', '--build-arg', 'DBT_DIR=.', '--build-arg', 'CREDENTIALS=./service_account.json',  '-t', 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '-f', 'Dockerfile', '.']
+    args: ['build', '--build-arg', 'PROJECT_ID=${_PROJECT}', '--build-arg', 'BQ_DATASET=datapay', '--build-arg', 'DBT_DIR=.', '--build-arg', 'CREDENTIALS=./service_account.json',  '-t', '${_REGION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}:latest', '-f', 'Dockerfile', '.']
 
 images:
-- 'europe-west1-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
+- '${_REGION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/${_IMAGE}'
 timeout: 1800s
 
 # gcloud builds submit --config=cloudbuild.yml --substitutions=_PROJECT="jacobhp-personal",_REPOSITORY="datapay-dbt",_IMAGE="dbt" .
