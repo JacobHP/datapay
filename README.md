@@ -14,7 +14,35 @@ Visualisation: https://lookerstudio.google.com/reporting/8fd12efe-4903-4c4d-ad12
 
 #### Requirements
 
-*Todo*
+**Installs for local development:**
+
+* Docker to run airflow: https://docs.docker.com/get-docker/
+* Dbt: https://docs.getdbt.com/docs/core/installation
+* Terraform: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+* Google cloud CLI: https://cloud.google.com/sdk/docs/install 
+
+**Setup:**
+ * On Python 3.9+ install ```requirements.txt```
+ * Create GCP Project
+ * Create GCP Service account with following permissions: 
+
+        - Artifact Registry Administrator
+        - BigQuery Admin
+        - Cloud Build Service Account
+        - Cloud Run Admin
+        - IAM Workload Identity Pool Admin
+        - Logs Viewer
+        - Secret Manager Admin
+        - Service Account User
+        - Storage Admin
+        - Viewer
+        - Workflows Admin
+* Fill out terraform variables in a file ```terraform.tfvars``` in ```terraform/``` directory 
+* Plan and apply the terraform scripts
+* Set up gh oidc secrets in github for gcloud CI: https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions
+* Commit to main to build docker images and workflows or run ```gcloud builds submit``` commands
+* Can either run workflows in GCP console, schedule with ```workflows/scheduler.sh``` script or run airflow locally by navigating to ```airflow/``` directory and running ```docker compose up``` and adding the service account json key as the GCP default secret in airflow
+
 
 ### Extract:
 Extract is done using docker images stored in Artifact Registry and can be ran as a Cloud Run or Cloud Build job.
@@ -33,7 +61,6 @@ The extract process is as follows:
 * Raw listings and details loaded into ingestion-time partitioned staging tables in bigquery.
 
 
-
 ### Transform:
 Transforms are done in dbt using docker images stored in Artifact Registry and can be ran as a Cloud Run or Cloud Build job. 
 
@@ -42,27 +69,29 @@ Transforms are done in dbt using docker images stored in Artifact Registry and c
 
 Airflow pipeline or Cloud Workflows runs ELT daily, I have set up the CI with Cloud Workflows as this is a lot more cost effective.
 
-#### Infrastructure
+### Infrastructure
 
-Terraform is used to provision environment objects. Note: You will need an existing project and service account with appropriate permissions.
+Terraform is used to provision environment. Note: You will need an existing project and service account with appropriate permissions.
 
 ### CI
 
 Github actions are used to run CI and tests for airflow pipelines
 
-#### Visualisation
+### Visualisation
 
 Dashboard is built in Google Looker Data Studio and can be found at: https://lookerstudio.google.com/reporting/8fd12efe-4903-4c4d-ad12-2bd60905471e
 
 The salary figures, where available, are calculated as an average of the minimum and maximum salary provided by Reed.
 
+![dashboard](./img/dashboard.png)
+
 **Note on limitations in visualisation:**
 
 Data Studio is a free tool limited in it's functionality. In particular when filtering by skills (a repeated field/multi-valued dimension) you will observe that selecting multiple skills runs **OR** logic in the filtering rather than **AND**. 
 
-For example, selecting skills 'GCP' and 'AWS' will display jobs containing 'GCP' or 'AWS'. Selecting skill 'Python' and unselecting 'Spark' will display jobs requiring 'Python' even if they also require 'Spark'. 
+For example, selecting skills 'Python' and 'AWS' will display jobs containing 'Python' or 'AWS'. i.e. this may include GCP based roles that use Python. Selecting skill 'Python' and unselecting 'Spark' will display jobs requiring 'Python' even if they also require 'Spark'. 
 
-For skills you don't want displayed I debated adding a 'non skill requirements' filter but this would create more confusion with the **OR** filtering logic. 
+For skills you don't want displayed I planned adding a 'non skill requirements' filter but this would create more confusion with the **OR** filtering logic. 
 
-I have not found a solution to this problem in Data Studio. As such I would recommend only using the skills filter when interested in averages for more advanced skills (e.g. Spark, Scala, Kafka), and not including the more common skills (e.g. Python, SQL)
+I have not found a solution to this problem in Data Studio. As such I would recommend only using the skills filter when interested in averages for more advanced skills (e.g. Spark, Scala, Kafka), and not including the more standard skills (e.g. Python, SQL)
 
